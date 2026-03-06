@@ -5,9 +5,9 @@ services:
     image: mariadb:11
     environment:
       - MARIADB_ROOT_PASSWORD=${SQL_ROOT_PASSWORD}
-      - MARIADB_DATABASE=logistico
-      - MARIADB_USER=${SQL_USER}
-      - MARIADB_PASSWORD=${SQL_PASSWORD}
+      - MARIADB_DATABASE=myrames-prod-db
+      - MARIADB_USER=mariaUsr
+      - MARIADB_PASSWORD=mariaPwd
     volumes:
       - sqldata:/var/lib/mysql
       - ./docker/sql/init:/docker-entrypoint-initdb.d
@@ -16,7 +16,7 @@ services:
   nosqldatabase:
     image: mongo:6.0
     environment:
-      - MONGO_INITDB_DATABASE=logistico_history
+      - MONGO_INITDB_DATABASE=HistoryDB
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
@@ -33,7 +33,7 @@ services:
   restapi:
     build:
       context: ./RESTApi
-      dockerfile: ../docker/restapi.Dockerfile
+      dockerfile: ./docker/restapi.Dockerfile
     depends_on:
       - sqldatabase
       - nosqldatabase
@@ -43,7 +43,7 @@ services:
     image: maven:3-eclipse-temurin-21
     working_dir: /usr/src/app
     volumes:
-      - ./RealTimeAPI:/usr/src/app
+      - ./RealtimeAPI:/usr/src/app
       - maven-cache:/root/.m2
       - wsapi-target:/usr/src/app/target
     command: ["mvn", "spring-boot:run"]
